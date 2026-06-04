@@ -8,7 +8,7 @@ Built by [@ayushamannujs-cloud](https://github.com/ayushamannujs-cloud), a law s
 
 ## The problem
 
-In 2026, West Bengal's SIR-2026 exercise deleted large numbers of names from electoral rolls. Each affected voter had **15 days** to file a formal appeal before an Appellate Tribunal. The appeal required a proper legal petition — caption block, numbered facts, legal grounds citing specific statutes and precedents, prayers, enclosures list, signed declaration. Drafting one manually takes 45–90 minutes. Legal aid volunteers were doing this at scale.
+In 2026, West Bengal's SIR-2026 exercise deleted large numbers of names from electoral rolls. Each affected voter had **15 days** to file a formal appeal before an Appellate Tribunal. The online appeal has several constrains, like word limit and no place to attach relevant documents. Thus the only option was an offline petition which required a proper legal petition — caption block, numbered facts, legal grounds citing specific statutes and precedents, prayers, enclosures list, signed declaration. Drafting one manually takes 45–90 minutes. Legal aid volunteers were doing this at scale.
 
 ## What this does
 
