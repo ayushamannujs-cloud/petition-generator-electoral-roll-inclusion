@@ -1,0 +1,237 @@
+:root {
+  color-scheme: light dark;
+}
+
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  text-align: left;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.preview-pane {
+  position: sticky;
+  top: 1.5rem;
+  border: 1px solid rgba(128, 128, 128, 0.35);
+  border-radius: 10px;
+  max-height: calc(100vh - 3rem);
+  overflow: auto;
+  background: rgba(128, 128, 128, 0.04);
+}
+
+.preview-head {
+  position: sticky;
+  top: 0;
+  padding: 0.7rem 1rem;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: rgba(100, 108, 255, 0.12);
+  border-bottom: 1px solid rgba(128, 128, 128, 0.25);
+}
+
+.preview-empty {
+  padding: 1.5rem;
+  opacity: 0.6;
+  font-size: 0.9rem;
+}
+
+/* The rendered petition — mimic the .docx scaffold roles. */
+.preview-doc {
+  padding: 2rem 2.25rem;
+  background: #fff;
+  color: #111;
+  font-family: "Bookman Old Style", Georgia, "Times New Roman", serif;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.preview-doc .petition p {
+  margin: 0 0 0.7em;
+}
+
+.preview-doc .center {
+  text-align: center;
+}
+
+.preview-doc .right {
+  text-align: right;
+}
+
+.preview-doc .justify {
+  text-align: justify;
+}
+
+.preview-doc .left {
+  text-align: left;
+}
+
+.preview-doc .doc-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.5em 0 1em;
+}
+
+.preview-doc .doc-table th,
+.preview-doc .doc-table td {
+  border: 1px solid #999;
+  padding: 4px 8px;
+  text-align: left;
+}
+
+.page h1 {
+  font-size: 1.9rem;
+  margin: 0 0 0.25rem;
+}
+
+.subtitle {
+  margin: 0 0 2rem;
+  opacity: 0.75;
+}
+
+fieldset {
+  border: 1px solid rgba(128, 128, 128, 0.35);
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem 1.5rem;
+  margin: 0 0 1.5rem;
+}
+
+legend {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 0 0.5rem;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.field:last-child {
+  margin-bottom: 0;
+}
+
+.field span {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+input,
+textarea,
+select {
+  font: inherit;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid rgba(128, 128, 128, 0.5);
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid #646cff;
+  border-color: transparent;
+}
+
+button[type="submit"] {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  background: #646cff;
+  color: white;
+  cursor: pointer;
+}
+
+button[type="submit"]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.error {
+  color: #d33;
+  font-weight: 600;
+  margin: 0 0 1rem;
+}
+
+.hint {
+  font-size: 0.82rem;
+  opacity: 0.65;
+  margin: 0 0 0.75rem;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 0.6rem;
+  font-size: 0.92rem;
+  cursor: pointer;
+}
+
+.check input {
+  width: 1rem;
+  height: 1rem;
+  flex: none;
+}
+
+.repeater {
+  margin-top: 1rem;
+}
+
+.repeater-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.6rem;
+}
+
+.repeater-head button {
+  font: inherit;
+  font-size: 0.82rem;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid rgba(128, 128, 128, 0.5);
+  border-radius: 7px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.relative-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.relative-row .remove {
+  border: none;
+  background: transparent;
+  color: #d33;
+  cursor: pointer;
+  font-size: 1rem;
+}
