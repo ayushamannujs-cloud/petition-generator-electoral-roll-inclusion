@@ -51,30 +51,41 @@ frontend/   Vite + React + TypeScript
 
 ## Run
 
-**Backend** (port 8011):
+Requires Python 3 and Node.js. Run the backend and frontend in two separate terminals.
+
+**Backend** (port 8000):
 ```bash
 cd backend
+python3 -m venv venv && source venv/bin/activate   # recommended
 pip install -r requirements.txt
-uvicorn app.main:app --port 8011
+uvicorn app.main:app --port 8000
 ```
 
-**Frontend:**
+**Frontend** (in a second terminal):
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-Open the dev URL, fill the intake form, click **Generate petition (.docx)**. The frontend expects the backend at `http://localhost:8011` (set in `frontend/.env` via `VITE_API_BASE`).
+Open the dev URL Vite prints (usually `http://localhost:5173`), fill the intake form, click **Generate petition (.docx)**. The frontend talks to the backend at `http://localhost:8000` by default; to point it elsewhere, copy `frontend/.env.example` to `frontend/.env` and set `VITE_API_BASE`.
+
+## Troubleshooting
+
+- **`npm error … Could not read package.json` / `ENOENT`** — you're in the wrong folder. `npm install` and `npm run dev` must be run inside `frontend/`, not the repo root.
+- **`pip install -r requirements.txt` can't find the file** — run it from inside `backend/`.
+- **The form lets you type but nothing happens on Generate / preview is blank** — the backend isn't reachable. Confirm it's running (`curl http://localhost:8000/api/health` should return `{"status":"ok"}`) and that the ports match.
+- **`ERROR: [Errno 48] Address already in use`** — a previous backend is still running on the port. Stop it and retry: `kill -9 $(lsof -ti :8000)` (macOS/Linux).
 
 ## Tests
 
 ```bash
 cd backend
+pip install -r requirements-dev.txt
 python -m pytest -q
 ```
 
-35 behavioural tests asserting on the generated document's actual content — section order, Bookman 12pt / A4 / asymmetric margins, ceremonial anchors, gender-driven pronouns, triggered law presence and absence, validation errors. Not implementation details.
+44 behavioural tests asserting on the generated document's actual content — section order, Bookman 12pt / A4 / asymmetric margins, ceremonial anchors, gender-driven pronouns, triggered law presence and absence, validation errors. Not implementation details.
 
 ## Context
 
