@@ -53,6 +53,11 @@ frontend/   Vite + React + TypeScript
 
 Requires Python 3 and Node.js. Run the backend and frontend in two separate terminals.
 
+**Before starting — clear port 8000** (skip if you know it's free):
+```bash
+kill -9 $(lsof -ti :8000) 2>/dev/null; true
+```
+
 **Backend** (port 8000):
 ```bash
 cd backend
@@ -70,12 +75,14 @@ npm run dev
 
 Open the dev URL Vite prints (usually `http://localhost:5173`), fill the intake form, click **Generate petition (.docx)**. The frontend talks to the backend at `http://localhost:8000` by default; to point it elsewhere, copy `frontend/.env.example` to `frontend/.env` and set `VITE_API_BASE`.
 
+> **If port 8000 is occupied by another app** (e.g. you have a different project running there), the frontend will silently hit the wrong backend and all fetches will fail. The port-clear command above prevents this. Alternatively, start the backend on a different port and set `VITE_API_BASE` accordingly.
+
 ## Troubleshooting
 
 - **`npm error … Could not read package.json` / `ENOENT`** — you're in the wrong folder. `npm install` and `npm run dev` must be run inside `frontend/`, not the repo root.
 - **`pip install -r requirements.txt` can't find the file** — run it from inside `backend/`.
 - **The form lets you type but nothing happens on Generate / preview is blank** — the backend isn't reachable. Confirm it's running (`curl http://localhost:8000/api/health` should return `{"status":"ok"}`) and that the ports match.
-- **`ERROR: [Errno 48] Address already in use`** — a previous backend is still running on the port. Stop it and retry: `kill -9 $(lsof -ti :8000)` (macOS/Linux).
+- **`ERROR: [Errno 48] Address already in use`** — another process holds port 8000. Run `kill -9 $(lsof -ti :8000)` (macOS/Linux) then restart the backend.
 
 ## Tests
 
