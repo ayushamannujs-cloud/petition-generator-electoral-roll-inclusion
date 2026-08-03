@@ -44,3 +44,19 @@ def test_other_documents_flow_through():
     text = all_text(doc)
     assert "Ration card" in text
     assert "Birth certificate" in text
+
+
+def test_documents_section_craves_leave_for_further_documents():
+    # Settled ¶9 closes with this, unnumbered and back at the margin.
+    text = all_text(build_petition(PetitionInput(
+        appellant_name="Rehana Bibi Mondal", gender="female", has_aadhaar=True)))
+    assert (
+        "Leave is hereby craved to submit and rely on additional supporting "
+        "documents at the time of hearing if necessary." in text
+    )
+
+
+def test_leave_is_not_craved_when_no_documents_are_relied_upon():
+    text = all_text(build_petition(PetitionInput(
+        appellant_name="Rehana Bibi Mondal", gender="female")))
+    assert "Leave is hereby craved" not in text

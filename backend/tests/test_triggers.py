@@ -24,7 +24,8 @@ def test_2002_mapping_with_aadhaar_unlocks_motab_shaikh_and_adr():
         build_petition(base(mapped_2002_sir=True, has_aadhaar=True, aadhaar_no="1111 2222 3333"))
     )
     assert "Motab Shaikh" in text
-    assert "ADR" in text
+    # The settled petition cites this one in full, unabbreviated.
+    assert "Association for Democratic Reforms" in text
     # authorities-rules.md §4b rule 2: the citation states its own trigger.
     assert "2002" in text and "Aadhaar" in text
 
