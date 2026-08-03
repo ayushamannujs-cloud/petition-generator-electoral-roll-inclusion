@@ -3,16 +3,22 @@ from __future__ import annotations
 
 import io
 import re
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, StreamingResponse
+from fastapi.staticfiles import StaticFiles
 
 from app.generator import build_petition
 from app.intake import PetitionInput
 from app.preview import render_html
 
 DOCX_MIME = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+
+# The built frontend, served from this same app so the whole thing is one origin
+# on one port — which is what lets a volunteer on the LAN just open the URL.
+FRONTEND_DIST = Path(__file__).resolve().parents[2] / "frontend" / "dist"
 
 app = FastAPI(title="SIR-2026 Petition Generator")
 
@@ -51,3 +57,9 @@ def preview_petition(intake: PetitionInput) -> HTMLResponse:
 @app.get("/api/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+# Mounted last so the /api routes above always win. Absent before the first
+# `npm run build`, in which case the API still serves fine on its own.
+if FRONTEND_DIST.is_dir():
+    app.mount("/", StaticFiles(directory=FRONTEND_DIST, html=True), name="frontend")

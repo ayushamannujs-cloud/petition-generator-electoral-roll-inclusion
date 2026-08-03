@@ -49,3 +49,8 @@ frontend/.vite/
 npm-debug.log*
 yarn-debug.log*
 frontend/.claude/
+
+# Case files — real appellant PII (Aadhaar, passport, EPIC, addresses).
+# Never commit. Use `git add -f` if you ever need a redacted sample tracked.
+*.pdf
+*.docx
