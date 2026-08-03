@@ -51,38 +51,39 @@ frontend/   Vite + React + TypeScript
 
 ## Run
 
-Requires Python 3 and Node.js. Run the backend and frontend in two separate terminals.
+Requires Python 3 and Node.js.
 
-**Before starting — clear port 8000** (skip if you know it's free):
 ```bash
-kill -9 $(lsof -ti :8000) 2>/dev/null; true
+python3 -m venv .venv
+.venv/bin/pip install -r backend/requirements-dev.txt
+./run.sh
 ```
 
-**Backend** (port 8000):
-```bash
-cd backend
-python3 -m venv venv && source venv/bin/activate   # recommended
-pip install -r requirements.txt
-uvicorn app.main:app --port 8000
+`run.sh` builds the frontend on first run, starts the backend, and prints the
+addresses to share. The backend serves both the UI and the API from **one
+port**, so a single URL works from any device on your network:
+
+```
+This Mac          http://localhost:2026
+Same wifi         http://your-macbook.local:2026
+Same wifi (IP)    http://192.168.x.x:2026
 ```
 
-**Frontend** (in a second terminal):
-```bash
-cd frontend
-npm install
-npm run dev
-```
+Anyone on the same wifi can open those — nothing leaves the network, and
+nothing is stored. Keep the window open; Ctrl-C stops it. Pass `--build` after
+editing anything in `frontend/src`; backend edits reload on their own.
 
-Open the dev URL Vite prints (usually `http://localhost:5173`), fill the intake form, click **Generate petition (.docx)**. The frontend talks to the backend at `http://localhost:8000` by default; to point it elsewhere, copy `frontend/.env.example` to `frontend/.env` and set `VITE_API_BASE`.
-
-> **If port 8000 is occupied by another app** (e.g. you have a different project running there), the frontend will silently hit the wrong backend and all fetches will fail. The port-clear command above prevents this. Alternatively, start the backend on a different port and set `VITE_API_BASE` accordingly.
+For frontend work with hot reload, run `npm run dev` inside `frontend/`
+alongside the backend; vite proxies `/api` through to port 2026.
 
 ## Troubleshooting
 
 - **`npm error … Could not read package.json` / `ENOENT`** — you're in the wrong folder. `npm install` and `npm run dev` must be run inside `frontend/`, not the repo root.
-- **`pip install -r requirements.txt` can't find the file** — run it from inside `backend/`.
-- **The form lets you type but nothing happens on Generate / preview is blank** — the backend isn't reachable. Confirm it's running (`curl http://localhost:8000/api/health` should return `{"status":"ok"}`) and that the ports match.
-- **`ERROR: [Errno 48] Address already in use`** — another process holds port 8000. Run `kill -9 $(lsof -ti :8000)` (macOS/Linux) then restart the backend.
+- **`pip install` can't find the requirements file** — the paths above are relative to the repo root. From inside `backend/`, use `requirements-dev.txt`.
+- **Opening the URL gives `{"detail":"Not Found"}`** — the frontend hasn't been built yet. Run `./run.sh --build`.
+- **Generate does nothing, or the preview stays blank** — check the backend is up: `curl http://localhost:2026/api/health` should return `{"status":"ok"}`.
+- **`ERROR: [Errno 48] Address already in use`** — something already holds the port. `run.sh` detects this and says so; to clear it, `kill $(lsof -ti :2026)`.
+- **Another device can't reach it** — it must be on the same wifi, and the server must be started with `--host 0.0.0.0` (`run.sh` does this). Your IP changes when you join a different network; `run.sh` prints the current one each time.
 
 ## Tests
 

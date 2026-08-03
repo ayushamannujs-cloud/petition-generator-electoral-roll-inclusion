@@ -8,7 +8,7 @@ A generator for West Bengal SIR-2026 electoral-roll deletion appeal petitions. A
 
 ## Commands
 
-Python deps live in a repo-root virtualenv (`.venv`, Python 3.14). There is **no `backend/requirements.txt`** despite the README referencing one — packages are installed directly into `.venv` (fastapi, uvicorn, python-docx, pydantic, pytest, httpx).
+Python deps are declared in `backend/requirements.txt` (runtime) and `backend/requirements-dev.txt` (adds pytest and httpx, which Starlette's TestClient needs). They install into a repo-root virtualenv at `.venv` — that path is what `run.sh` expects, not `backend/venv`.
 
 ```bash
 # Tests — must run from backend/ (pytest.ini sets testpaths=tests; imports are `app.*` / `tests.*`)
