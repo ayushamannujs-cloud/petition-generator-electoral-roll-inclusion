@@ -24,6 +24,9 @@ def _parse_date(value: str) -> date | None:
     return None
 
 Gender = Literal["male", "female", "other"]
+# Why the appellant moved. Marriage and a plain transfer plead differently, so
+# there is no safe default — the reason is required once a move is pleaded.
+AddressChangeReason = Literal["marriage", "transfer"]
 
 
 class Relative(BaseModel):
@@ -39,9 +42,14 @@ class PetitionInput(BaseModel):
     gender: Gender = "female"
     address: str | None = None
     epic_no: str | None = None
+    # Intake-only: the settled petition carries no contact line, so this is
+    # captured so a volunteer can reach the appellant, never rendered.
     contact: str | None = None
 
     # Section B — forum & roll location (3a, derived)
+    tribunal_venue: str | None = Field(
+        None, description="Where the tribunal sits, e.g. 'Entally Jessop Building'"
+    )
     district: str | None = None
     constituency_name: str | None = None
     constituency_no: str | None = None
@@ -82,6 +90,21 @@ class PetitionInput(BaseModel):
     relatives_on_roll: list[Relative] = Field(default_factory=list)
     continuous_resident_since: str | None = None
 
+    # Section H — why the roll and the appellant's documents disagree.
+    # A multi-select, like the documents held: more than one can apply at once.
+    mismatch_appellant_name: bool = False
+    name_on_roll: str | None = Field(None, description="Name as printed on the roll")
+    mismatch_father_name: bool = False
+    father_name_on_roll: str | None = None
+    address_changed: bool = False
+    address_change_reason: AddressChangeReason | None = None
+    previous_address: str | None = None
+    previous_constituency: str | None = None
+    registered_since: str | None = None
+    marriage_date: str | None = None
+    spouse_name: str | None = Field(None, description="Husband's name, where the move follows marriage")
+    other_reason: str | None = Field(None, description="Free text — where the listed reasons do not fit")
+
     # Section F — hardship & relief
     hardship: str | None = None
     relief_set_aside: bool = True
@@ -99,6 +122,13 @@ class PetitionInput(BaseModel):
         if self.relief_compensation and not self.hardship:
             raise ValueError(
                 "relief_compensation requires a hardship description"
+            )
+        # A pleaded move must say which kind: the two produce different sentences
+        # and different legal weight, so guessing between them is not safe.
+        if self.address_changed and not self.address_change_reason:
+            raise ValueError(
+                "address_change_reason is required when address_changed is set "
+                "('marriage' or 'transfer')"
             )
         # Appeal must fall within APPEAL_WINDOW_DAYS of the deletion.
         if self.appeal_date and self.deletion_date:

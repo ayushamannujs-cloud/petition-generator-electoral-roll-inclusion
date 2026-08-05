@@ -5,6 +5,7 @@ import {
   type PetitionInput,
   type Gender,
   type Relative,
+  type AddressChangeReason,
 } from "./api";
 import "./App.css";
 
@@ -122,7 +123,8 @@ function App() {
         <fieldset>
           <legend>A · Who you are</legend>
           {Text("appellant_name", "Full name (as on EPIC) *")}
-          {Text("guardian_name", "Father's / Husband's name")}
+          {Text("guardian_name", "Father's name (as on the roll)")}
+          {Text("spouse_name", "Husband's / wife's name (if married)")}
           {Text("address", "Full residential address (with PIN)", true)}
           {Text("epic_no", "EPIC No.")}
           {Text("contact", "Mobile / email")}
@@ -141,6 +143,7 @@ function App() {
 
         <fieldset>
           <legend>B · Forum &amp; roll location</legend>
+          {Text("tribunal_venue", "Where the tribunal sits (e.g. Entally Jessop Building)")}
           {Text("district", "District")}
           {Text("constituency_name", "Assembly Constituency name")}
           {Text("constituency_no", "Constituency No.")}
@@ -159,7 +162,11 @@ function App() {
             <>
               {Text("notice_no", "Notice No.")}
               {Text("notice_date", "Notice date")}
-              {Text("notice_reason", "Reason stated in notice")}
+              {Text(
+                "notice_reason",
+                "Reason stated in the notice — copied word for word, it is quoted in the petition",
+                true,
+              )}
             </>
           )}
 
@@ -192,7 +199,53 @@ function App() {
         </fieldset>
 
         <fieldset>
-          <legend>D · Documents you hold</legend>
+          <legend>D · Why the roll disagrees with your documents</legend>
+          <p className="hint">
+            Tick every one that applies — most appellants have more than one.
+          </p>
+
+          {Check("mismatch_appellant_name", "My name is spelt differently on the roll")}
+          {form.mismatch_appellant_name &&
+            Text("name_on_roll", "Name as printed on the roll")}
+
+          {Check("mismatch_father_name", "My father's name is spelt differently on the roll")}
+          {form.mismatch_father_name &&
+            Text("father_name_on_roll", "Father's name as printed on the roll")}
+
+          {Check("address_changed", "My address changed after I was enrolled")}
+          {form.address_changed && (
+            <>
+              <label className="field">
+                <span>Reason for the change *</span>
+                <select
+                  value={form.address_change_reason ?? ""}
+                  onChange={(e) =>
+                    set(
+                      "address_change_reason",
+                      (e.target.value || undefined) as
+                        | AddressChangeReason
+                        | undefined,
+                    )
+                  }
+                >
+                  <option value="">— select —</option>
+                  <option value="marriage">Marriage</option>
+                  <option value="transfer">Transfer / relocation</option>
+                </select>
+              </label>
+              {Text("previous_address", "Previous address / district")}
+              {Text("previous_constituency", "Previous Assembly Constituency")}
+              {Text("registered_since", "Registered as a voter there since (year)")}
+              {form.address_change_reason === "marriage" &&
+                Text("marriage_date", "Date of marriage")}
+            </>
+          )}
+
+          {Text("other_reason", "Something else — describe it", true)}
+        </fieldset>
+
+        <fieldset>
+          <legend>E · Documents you hold</legend>
           {Check("has_voter_id", "Voter ID / EPIC")}
           {Check("has_aadhaar", "Aadhaar ⭐")}
           {form.has_aadhaar && Text("aadhaar_no", "Aadhaar No.")}
@@ -220,7 +273,7 @@ function App() {
         </fieldset>
 
         <fieldset>
-          <legend>E · Special legal triggers</legend>
+          <legend>F · Special legal triggers</legend>
           {Check("mapped_2002_sir", "Name mapped in the 2002/2003 SIR ⭐ (with Aadhaar → Motab Shaikh / ADR)")}
           {Text("continuous_resident_since", "Continuous resident since (year)")}
 
@@ -257,7 +310,7 @@ function App() {
         </fieldset>
 
         <fieldset>
-          <legend>F · Hardship &amp; relief</legend>
+          <legend>G · Hardship &amp; relief</legend>
           {Text("hardship", "Personal hardship (age, illness, caregiving) — describe", true)}
           {Check("relief_set_aside", "Set aside the deletion")}
           {Check("relief_restore", "Restore my name on the roll")}
@@ -266,7 +319,7 @@ function App() {
         </fieldset>
 
         <fieldset>
-          <legend>G · Declaration</legend>
+          <legend>H · Declaration</legend>
           {Text("place", "Place")}
           {Text("declaration_date", "Date")}
         </fieldset>

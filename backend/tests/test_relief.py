@@ -10,6 +10,39 @@ def base(**kw) -> PetitionInput:
     return PetitionInput(appellant_name="Priya Devi Das", gender="female", **kw)
 
 
+def test_relatives_block_closes_with_the_corroboration_argument():
+    # Settled ¶11 follows the (a)-(e) list with prose drawing the inference.
+    text = all_text(
+        build_petition(base(relatives_on_roll=[{"name": "Nasima Khatun", "relationship": "Brother"}]))
+    )
+    assert "The presence of the above relatives" in text
+    assert "resided in India and West Bengal continuously" in text
+    assert "unjustified and untenable in law" in text
+
+
+def test_no_corroboration_argument_without_relatives():
+    assert "The presence of the above relatives" not in all_text(build_petition(base()))
+
+
+def test_restoration_prayer_names_where_on_the_roll():
+    # Settled prayer (b) identifies the constituency, part and serial number —
+    # a direction to "restore the name" is unenforceable without them.
+    doc = build_petition(
+        base(constituency_no="163", constituency_name="Entally", part_or_serial_no="161/146")
+    )
+    relief = next(p.text for p in doc.paragraphs if p.text.strip().startswith("(b)"))
+    assert "163" in relief
+    assert "Entally" in relief
+    assert "161/146" in relief
+
+
+def test_restoration_prayer_falls_back_to_blanks():
+    relief = next(
+        p.text for p in build_petition(base()).paragraphs if p.text.strip().startswith("(b)")
+    )
+    assert "____" in relief
+
+
 def test_relatives_table_and_argument_appear():
     doc = build_petition(
         base(relatives_on_roll=[

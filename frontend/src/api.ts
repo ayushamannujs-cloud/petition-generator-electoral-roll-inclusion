@@ -1,4 +1,5 @@
 export type Gender = "male" | "female" | "other";
+export type AddressChangeReason = "marriage" | "transfer";
 
 export interface Relative {
   name: string;
@@ -15,6 +16,7 @@ export interface PetitionInput {
   epic_no?: string;
   contact?: string;
   // B — forum & roll location
+  tribunal_venue?: string;
   district?: string;
   constituency_name?: string;
   constituency_no?: string;
@@ -50,6 +52,19 @@ export interface PetitionInput {
   mapped_2002_sir?: boolean;
   relatives_on_roll?: Relative[];
   continuous_resident_since?: string;
+  // Why the roll and the appellant's documents disagree (multi-select)
+  mismatch_appellant_name?: boolean;
+  name_on_roll?: string;
+  mismatch_father_name?: boolean;
+  father_name_on_roll?: string;
+  address_changed?: boolean;
+  address_change_reason?: AddressChangeReason;
+  previous_address?: string;
+  previous_constituency?: string;
+  registered_since?: string;
+  marriage_date?: string;
+  spouse_name?: string;
+  other_reason?: string;
   // F — hardship & relief
   hardship?: string;
   relief_set_aside?: boolean;
@@ -61,7 +76,10 @@ export interface PetitionInput {
   declaration_date?: string;
 }
 
-const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000";
+// Same-origin by default: the backend serves this bundle, so relative paths work
+// from any device on the network without baking in a host that only resolves on
+// the developer's own machine. In `npm run dev`, vite proxies /api to the backend.
+const API_BASE = import.meta.env.VITE_API_BASE ?? "";
 
 /** Returns an HTML preview of the petition (same content as the .docx). */
 export async function previewPetition(input: PetitionInput): Promise<string> {

@@ -13,7 +13,29 @@ def base(**kw) -> PetitionInput:
 def test_beats_absent_by_default():
     text = all_text(build_petition(base()))
     assert "Draft Electoral Roll" not in text
-    assert "Supplementary" not in text
+    # "Supplementary" alone is no longer a marker for the deletion beat — the
+    # preamble and prayer (a) both name the Supplementary Roll as boilerplate.
+    assert "Deleted-Electors" not in text
+
+
+def test_enumeration_clause_is_pleaded_only_when_the_form_was_submitted():
+    # The draft-roll beat used to assert the enumeration form unconditionally,
+    # putting a fact in the petition the appellant may never have pleaded.
+    without = all_text(build_petition(base(on_draft_roll=True, draft_roll_date="19.11.2025")))
+    assert "Draft Electoral Roll" in without
+    assert "enumeration form" not in without
+
+    with_form = all_text(
+        build_petition(
+            base(
+                on_draft_roll=True,
+                draft_roll_date="19.11.2025",
+                enumeration_form_submitted=True,
+            )
+        )
+    )
+    assert "enumeration form" in with_form
+    assert "Booth Level Officer" in with_form
 
 
 def test_draft_roll_beat_appears_when_on():
@@ -44,7 +66,7 @@ def test_beats_run_in_chronological_order():
         index_of(doc, "notice"),
         index_of(doc, "hearing"),
         index_of(doc, "Under Adjudication"),
-        index_of(doc, "Supplementary"),
+        index_of(doc, "Deleted-Electors"),
         index_of(doc, "appeal bearing No. A/99"),
     ]
     assert all(i != -1 for i in order), order
