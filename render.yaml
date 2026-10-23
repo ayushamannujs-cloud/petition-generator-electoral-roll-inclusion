@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: sir-2026-petition-generator
+    runtime: docker
+    plan: free
+    region: singapore
+    branch: main
+    healthCheckPath: /api/health
+    autoDeploy: true
