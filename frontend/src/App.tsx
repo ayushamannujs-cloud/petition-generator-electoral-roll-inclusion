@@ -7,6 +7,7 @@ import {
   type Relative,
   type AddressChangeReason,
 } from "./api";
+import { LANGUAGES, SAMPLE } from "./sample";
 import "./App.css";
 
 const INITIAL: PetitionInput = {
@@ -33,6 +34,20 @@ function App() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [preview, setPreview] = useState("");
+  const [isSample, setIsSample] = useState(false);
+  const [lang, setLang] = useState("en");
+  const chosen = LANGUAGES.find((l) => l.code === lang) ?? LANGUAGES[0];
+
+  const loadSample = () => {
+    setForm(SAMPLE);
+    setIsSample(true);
+    setError(null);
+  };
+  const clearForm = () => {
+    setForm(INITIAL);
+    setIsSample(false);
+    setError(null);
+  };
 
   const set = <K extends keyof PetitionInput>(k: K, v: PetitionInput[K]) =>
     setForm((f) => ({ ...f, [k]: v }));
@@ -109,14 +124,53 @@ function App() {
 
   return (
     <main className="page">
-      <header>
-        <h1>SIR-2026 Electoral Roll Appeal</h1>
-        <p className="subtitle">
-          Re-inclusion petition generator. Fill the intake and download a
-          formatted <code>.docx</code>. Only a handful of answers are
-          load-bearing — the rest is data capture.
+      <div className="topbar">
+        <label className="lang">
+          <span className="lang-icon" aria-hidden="true">अ/A</span>
+          <span className="sr-only">Language</span>
+          <select value={lang} onChange={(e) => setLang(e.target.value)}>
+            {LANGUAGES.map((l) => (
+              <option key={l.code} value={l.code}>
+                {l.code === "en" ? l.english : `${l.native} · ${l.english}`}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+      {lang !== "en" && (
+        <p className="notice notice-lang" role="status">
+          <strong>{chosen.native}</strong> is coming soon. The form and the
+          petition are in English for now.
         </p>
+      )}
+
+      <header className="hero">
+        <div>
+          <h1>SIR-2026 Electoral Roll Appeal</h1>
+          <p className="subtitle">
+            Re-inclusion petition generator. Fill the intake and download a
+            formatted <code>.docx</code>. Only a handful of answers are
+            load-bearing — the rest is data capture.
+          </p>
+        </div>
+        <div className="hero-actions">
+          <button type="button" className="btn-sample" onClick={loadSample}>
+            Fill sample case
+          </button>
+          {(isSample || form.appellant_name) && (
+            <button type="button" className="btn-ghost" onClick={clearForm}>
+              Clear
+            </button>
+          )}
+        </div>
       </header>
+
+      {isSample && (
+        <p className="notice notice-sample" role="status">
+          Sample case loaded. Every name, number and address in it is
+          made up. Change any answer and watch the petition re-draft itself.
+        </p>
+      )}
 
       <div className="layout">
       <form onSubmit={onSubmit}>
